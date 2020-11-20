@@ -1,0 +1,11 @@
+{
+    "tools":{
+        "crack":"100"
+    },
+    "cheat_sheets":{
+        "crack":{
+            "params":["-port"],
+            "output":"gain bshell access"
+        }
+    }
+}
