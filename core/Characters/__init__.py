@@ -12,10 +12,11 @@ random.seed(time.time())
 class Player():
     def __init__(self, col, rows, engine):
         self.id=random.randint(10,100)
-        self.pos=[random.randint(0,5),random.randint(0,4)]
+        self.pos=[random.randint(0,4),random.randint(0,3)]
         self.Engine=engine
         self.selected=None
         self.img='P'
+        self.action_range=1 # it means center+1, so 3*3 grid
     
     def move(self, pos):
         newx=int(pos.split(',')[0]); x=self.pos[0]
@@ -41,22 +42,41 @@ class Player():
                     if not bot.id==self.id:
                         print(css.FAIL+'[ERR]'+css.ENDC+' ID:',bot.id,'already in',newx,',',newy,'!')
                     return
-            self.pos=[newx, newy]
+                if newx<=self.pos[0]+self.action_range and newx>=self.pos[0]-self.action_range:
+                    if newy<=self.pos[1]+self.action_range and newy>=self.pos[1]-self.action_range:
+                        self.pos=[newx, newy]
+                    else:
+                        print(errs.ActionRangeError(pos=[newx,newy])); return
+                else:
+                    print(errs.ActionRangeError(pos=[newx,newy])); return
         else:
             if skip=='y':
                 for bot in self.Engine.robots:
                     if bot.pos==[newx, y]:
                         if not bot.id==self.id:
                             print(css.FAIL+'[ERR]'+css.ENDC+' ID:',bot.id,'already in',newx,',',newy,'!')
-                        return
-                self.pos=[newx, y]
+                            return
+                    # newpos=[newx, y]
+                    if newx<=self.pos[0]+self.action_range and newx>=self.pos[0]-self.action_range:
+                        if y<=self.pos[1]+self.action_range and y>=self.pos[1]-self.action_range:
+                            self.pos=[newx, y]
+                        else:
+                            print(errs.ActionRangeError(pos=[newx, y])); return
+                    else:
+                        print(errs.ActionRangeError(pos=[newx, y])); return
             else:
                 for bot in self.Engine.robots:
                     if bot.pos==[x, newy]:
                         if not bot.id==self.id:
                             print(css.FAIL+'[ERR]'+css.ENDC+' ID:',bot.id,'already in',newx,',',newy,'!')
                         return
-                self.pos=[x, newy]
+                    if x<=self.pos[0]+self.action_range and x>=self.pos[0]-self.action_range:
+                        if newy<=self.pos[1]+self.action_range and newy>=self.pos[1]-self.action_range:
+                            self.pos=[x, newy]
+                        else:
+                            print(errs.ActionRangeError(pos=[x,newy])); return
+                    else:
+                        print(errs.ActionRangeError(pos=[x,newy])); return
 
 class Kernel():
     def __init__(self):

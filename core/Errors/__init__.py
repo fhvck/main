@@ -31,3 +31,14 @@ class SameObjError(Exception):
 class HackError(Exception):
     def __init__(self, txt='', *args, **kwargs):
         print('\033[91m[ERR]\033[0m Unable to hack.'+txt)
+
+class ActionRangeError(Exception):
+    def __init__(self, b=None, pos=[], *a, **k):
+        super().__init__(*a, **k)
+        self.b=b
+        self.pos=pos
+    def __str__(self):
+        if self.b:
+            return "[ERR] Object w/ id: "+repr(self.b.id)+" is too far."
+        else: 
+            return "[ERR] "+repr(self.pos)+" is too far."

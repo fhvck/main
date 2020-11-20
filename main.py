@@ -23,7 +23,7 @@ points={
 }
 
 class Engine():
-    def __init__(self, col=4, rows=5, enems=3):
+    def __init__(self, col=4, rows=5, enems=1):
         self.gamepoints=0
         # map setup
         self.columns=col
@@ -44,6 +44,8 @@ class Engine():
 
     def run(self):
         while True:
+            if not len(self.robots) or (len(self.robots)==1 and self.robots[0]==self.player):
+                self.win()
             self.update_map()
             while self.inbshell:
                 try:
@@ -65,7 +67,7 @@ class Engine():
                     self.player.selected.parser(input(css.OKGREEN+'[BOT]'+css.ENDC+css.OKCYAN+'[SCORE:{}]'.format(self.gamepoints)+css.ENDC+' -state:{}- >> '.format(self.player.selected.state)))
                 else:
                     self.show_map()
-                    self.parser(input(css.OKGREEN+'[MAP]'+css.ENDC+css.OKCYAN+'[SCORE:{}]'.format(self.gamepoints)+css.ENDC)) # map parser
+                    self.parser(input(css.OKGREEN+'[MAP]'+css.ENDC+css.OKCYAN+'[SCORE:{}]'.format(self.gamepoints)+css.ENDC+' >> ')) # map parser
             except errs.ParamError as e:
                 print(str(e))
             except errs.SameObjError as e:
@@ -113,19 +115,33 @@ class Engine():
                         if bot==self.player:
                             raise errs.SameObjError(bot, self.player)
                             return
-                        self.player.selected=bot
+                        if int(bot.pos[0])>=(int(self.player.pos[0])-self.player.action_range) and int(bot.pos[0])<=(int(self.player.pos[0])+self.player.action_range):
+                            if int(bot.pos[1])>=(int(self.player.pos[1])-self.player.action_range) and int(bot.pos[1])<=(int(self.player.pos[1])+self.player.action_range):
+                                self.player.selected=bot
+                            else:
+                                raise errs.ActionRangeError(bot)
+                        else:
+                            raise errs.ActionRangeError(bot)
             elif '-pos' in params:
                 v=params[params.index('-pos')+1]
                 for bot in self.robots:
                     if bot.pos==[int(i) for i in v.split(',')]:
-                        self.player.selected=bot
+                        if int(bot.pos[0])>=(int(self.player.pos[0])-self.player.action_range) and int(bot.pos[0])<=(int(self.player.pos[0])+self.player.action_range):
+                            if int(bot.pos[1])>=(int(self.player.pos[1])-self.player.action_range) and int(bot.pos[1])<=(int(self.player.pos[1])+self.player.action_range):
+                                self.player.selected=bot
+                            else:
+                                raise errs.ActionRangeError(bot)
+                        else:
+                            raise errs.ActionRangeError(bot)
             else:
                 raise errs.ParamError(params)
 
         # MOVE
         elif cmd=='move':
             self.player.move(params[0])
-        elif cmd=='bye':
+        
+        # EXIT && BYE
+        elif cmd in ['bye', 'exit']:
             print('[?] Are you sure?')
             c=getch()
             if c in ['y','s']:
@@ -139,6 +155,27 @@ class Engine():
         else:
             raise errs.CommandNotFoundError(cmd)
     
+    def win(self):
+        self.gamepoints+=10
+        cls_()
+        titles=[
+            '__   _____  _   _  __        _____ _   _ \n\\ \\ / / _ \\| | | | \\ \\      / /_ _| \\ | |\n \\ V / | | | | | |  \\ \\ /\\ / / | ||  \\| |\n  | || |_| | |_| |   \\ V  V /  | || |\\  |\n  |_| \\___/ \\___/     \\_/\\_/  |___|_| \\_|\n                                         \n',
+            '                                                \n# #      #      # #         # #     ###     ### \n# #     # #     # #         # #      #      # # \n #      # #     # #         ###      #      # # \n #      # #     # #         ###      #      # # \n #       #      ###         # #     ###     # # \n'
+            ]
+        # TODO dump data
+        print(css.OKGREEN+random.choice(titles)+css.ENDC)
+        while True:
+            print('Do you want to start a new game? (y\\n)')
+            r=getch()
+            if r.lower()=='y':
+                main()
+            elif r.lower()=='n':
+                print('Exiting...')
+                time.sleep(1); exit(code=0)
+            else:
+                print('[ERR] Invalid Key',r,'.')
+                continue
+
     def update_map(self):
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
