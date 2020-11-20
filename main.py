@@ -65,7 +65,7 @@ class Engine():
                     self.player.selected.parser(input(css.OKGREEN+'[BOT]'+css.ENDC+css.OKCYAN+'[SCORE:{}]'.format(self.gamepoints)+css.ENDC+' -state:{}- >> '.format(self.player.selected.state)))
                 else:
                     self.show_map()
-                    self.parser(input('\n[MAP][SCORE:{}] >> '.format(self.gamepoints))) # map parser
+                    self.parser(input(css.OKGREEN+'[MAP]'+css.ENDC+css.OKCYAN+'[SCORE:{}]'.format(self.gamepoints)+css.ENDC)) # map parser
             except errs.ParamError as e:
                 print(str(e))
             except errs.SameObjError as e:
@@ -79,12 +79,16 @@ class Engine():
         if '-h' in params:
             self.docs(cmd)
             return
+
+        # HELP
         if cmd=='help':
             if not len(params):
                 print(css.HEADER+'[*]'+css.ENDC+' List of commands:')
                 [print(command) for command in json.loads(open('core/commands.json').read())['commands']]
             else:
                 self.docs(params[0].casefold())
+        
+        # SHOW
         elif cmd=='show':
             if '-a' in params:
                 self.overrideshow=True
@@ -99,6 +103,8 @@ class Engine():
                 self.showpos=False
             else:
                 raise errs.ParamError(params)
+
+        # SELECT
         elif cmd=='select':
             if '-id' in params:
                 v=int(params[params.index('-id')+1])
@@ -115,6 +121,8 @@ class Engine():
                         self.player.selected=bot
             else:
                 raise errs.ParamError(params)
+
+        # MOVE
         elif cmd=='move':
             self.player.move(params[0])
         elif cmd=='bye':
@@ -130,7 +138,6 @@ class Engine():
                 print(css.FAIL+'[ERR]'+css.ENDC+' Unrecognized key, back to game.')
         else:
             raise errs.CommandNotFoundError(cmd)
-            #breakpoint()
     
     def update_map(self):
         for y in range(len(self.map)):
@@ -147,11 +154,11 @@ class Engine():
                                 else:
                                     self.map[y][x]=bot.img; done=True
                             else:
-                                self.map[y][x]='U'; done=True
+                                self.map[y][x]=css.OKBLUE+'U'+css.ENDC; done=True
                         elif self.showids:
-                            self.map[y][x]=bot.id; done=True
+                            self.map[y][x]=bot.color+str(bot.id)+css.ENDC; done=True
                         elif self.showpos:
-                            self.map[y][x]=','.join([str(p) for p in bot.pos]); done=True
+                            self.map[y][x]=','.join([str(p) for p in bot.pos]); done=True # TODO color here 
                         else:
                             self.map[y][x]=bot.img; done=True
                 if not done:

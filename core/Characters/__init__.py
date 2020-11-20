@@ -67,11 +67,14 @@ class Kernel():
         [self.hashes.update({port:base64.b64encode(''.join([chr(random.randint(97,122)) for _ in range(5)]).encode()).decode()}) for port in self.ports.keys()]
 
 class Robot():
-    def __init__(self, Engine):
+    def __init__(self, Engine, img='R'):
         self.id=random.randint(10,100)
         self.pos=[random.randint(0,5),random.randint(0,4)]
-        self.img='R'
+        self.img=css.FAIL+img+css.ENDC
+        self.color=css.FAIL
+        self.level=2
         # --
+        self.commands=json.loads(open('core/Characters/commands.json').read())['commands']
         self.state=css.FAIL+'locked'+css.ENDC
         self.kernel=Kernel()
         self.Engine=Engine
@@ -86,9 +89,10 @@ class Robot():
         
         # HELP
         if cmd=='help':
-            return
+            print(css.HEADER+'[H]'+css.ENDC+' List of commands:'); [print('-',cmd) for cmd in self.commands]
+            print(css.HEADER+'[H]'+css.ENDC+' Type "cmd -h" for info about cmd.')
         
-        # SCAN
+        # HACK
         elif cmd=='hack':
             port=str(params[params.index('-port')+1])
             if self.kernel.ports[port]==1:
@@ -97,6 +101,8 @@ class Robot():
                 print(css.OKCYAN+'[..]'+css.ENDC+' Hacking on port:',params[0])
                 self.kernel.islocked=False
                 self.state=css.OKGREEN+'unlocked'+css.ENDC
+                self.img=css.OKGREEN+(self.img.replace(css.FAIL, ''))
+                self.color=css.OKGREEN
                 time.sleep(0.5)
                 print(css.OKCYAN+'[*]'+css.ENDC+css.OKGREEN+' Successfully hacked.'+css.ENDC)
         
@@ -137,6 +143,59 @@ class Robot():
         elif cmd=='info':
             [print(k,'->',self.kernel.__dict__[k]) for k in self.kernel.__dict__ if not k.startswith('__')]
         
+        # HASH
+        elif cmd=='hash':
+            if not len(params): params.append('-port')
+            if params[0]=='-port':
+                # show mode, mostra la cifratura della porta
+                try:
+                    print(css.OKCYAN+'[HASH]'+css.ENDC,params[1],self.kernel.hashes[str(params[1])])
+                except Exception:
+                    [print(css.OKCYAN+'[HASH]'+css.ENDC,key,self.kernel.hashes[key]) for key in self.kernel.hashes.keys()]
+            elif params[0]=='-res':
+                # map commands like: {param:val}
+                mappedparams={}
+                for p in params:
+                    if not p.startswith('-'): continue
+                    try:
+                        mappedparams.update({p:params[params.index(p)+1]})
+                    except: break
+                if mappedparams['-res']==base64.b64decode(self.kernel.hashes[mappedparams['-port']]).decode():
+                    self.kernel.ports[mappedparams['-port']]=0
+                    print(css.HEADER+'[*]'+css.ENDC+' Port {p} Successfully bypassed.'.format(p=mappedparams['-port']))
+                else:
+                    print(css.FAIL+'[!!] Failed.'+css.ENDC)
+            else:
+                print(css.WARNING+'[WARN]'+' Unrecognized param {p}, using "-port" instead.'.format(p=params[0]))
+                try:
+                    print(css.OKGREEN+'[HASH]'+css.ENDC,params[1],self.kernel.hashes[str(params[1])])
+                except Exception:
+                    [print(css.OKGREEN+'[HASH]'+css.ENDC,key,self.kernel.hashes[key]) for key in self.kernel.hashes.keys()]
+        
+        # TRANSLATER
+        elif cmd in ['translater', 'encoder', 'decoder']:
+            if cmd=='encoder':
+                s=params[params.index('-text')+1]
+                print(css.HEADER+'[*]'+css.ENDC+' Encoded text: '+css.OKBLUE, base64.b64encode(s).decode(),css.ENDC)
+            elif cmd=='decoder':
+                s=params[params.index('-text')+1]
+                print(css.HEADER+'[*]'+css.ENDC+' Decoded text: '+css.OKBLUE, base64.b64decode(s).decode(),css.ENDC)
+            elif cmd=='translater':
+                if not '-mode' in params:
+                    if 'encode' in params or 'decode' in params:
+                        if 'encode' in params:
+                            s=params[params.index('-text')+1]
+                            print(css.HEADER+'[*]'+css.ENDC+' Encoded text: ', base64.b64encode(s).decode())
+                        else:
+                            s=params[params.index('-text')+1]
+                            print(css.HEADER+'[*]'+css.ENDC+' Decoded text: ', base64.b64decode(s).decode())
+        
+        # EXIT
+        elif cmd in ['exit', 'bye']:
+            print('exiting')
+            self.Engine.player.selected=None
+
+    
     def BShell(self, x):
         raise NotImplementedError()
 
