@@ -1,84 +1,35 @@
-<h1>How To Run</h1>
-se non si dispone di python 3.x sul proprio computer installarlo da https://www.python.org/ftp/python/3.9.0/python-3.9.0-amd64.exe
+# LA BASE
+la tua base è quel posto in cui puoi trovare il tuo computer, le cards e il tuo client SMTP.
+## il tuo computer
+questo è il computer con cui andrai in battaglia. Accedendo a questa schermata puoi leggere un elenco dei tools sbloccati con tanto di documentazione oppure modificare le tue impostazioni
 
-installato python fare doppio click su main.py oppure usando un terminale entrate nel percorso dei file scaricati con il comando "cd" e 
-scrivere python main.py nella cartella hackabot2A/
-
-<h1>Start</h1>
-all'avvio vengono generati dei bot in posizioni casuali che cercheranno di attaccarti o difendersi
-
-il tuo obiettivo è quello di spegnerli o distruggerli.
-
-# Global sheet
-i comandi globali sono quei comandi che vengono eseguiti nella mappa.
-
-## select
-usage:
+per accedere basta scrivere nel menu principale:
 ```python
-select -m MODE VAL
+c/ mypc
 ```
-usando MODE (ossia "id" o "pos") seleziona un Robot dalla mappa
-
-esempio:
-```python
-select -m id 54
+e dalla schermata del tuo computer hai a disposizione questi comandi:
+```sh
+cd .setts   # per modificare le impostazioni
+enable FMTP # abilita il ricevimento delle mail
+kill FMTP   # interrompi la ricezione delle mail
+help        # mostra la documentazione
 ```
-per selezionare il bot con id=54, oppure
-```python
-select -m pos 1,2
+
+## comandi
+i comandi seguono tutti la STDSYX che sta per Standard Syntax. questa ha come base:
+```sh
+command -variable value
 ```
-per selezionare il bot con coordinate x=1, y=2
+questo eseguirà _command_ dando alla variable _variable_ il valore _value_
 
-## show
-usage:
-```python
-show VAL
+esempio pratico
 ```
-nella mappa mostra VAL.
-VAL può essere:
-- id / ids --> mostra gli id dei bots
-- pos  ------> mostra le coordinate
-- null ------> default, non mostrare niente
-
-
-# BOT Sheet
-
-un Robot ha _sempre_ due porte, 80 e 443, più altre generate a caso (le altre porte devo ancora implementarle).
-
-## hacking
-hackerare un bot significa prendere il controllo e poter eseguire script nella sua MShell
-
-dopo aver selezionato un robot cerchiamo di entrare nella sua MShell in questo modo:
-
-```python
-hash -port
+select -id 10
 ```
-questo ci mostrerà le porte e i loro stati, ora scriviamo:
+questo eseguirà il comando select con id=10. questo comando serve per selezionare un nemico sulla mappa usando un suo valore univoco che potrebbe essere il suo id o la posizione, di norma _select_ viene lanciato con id=NULL e pos=NULL e poi automaticamente modificherà la variabile selezionata con il valore specificato. 
 
-```python
-decoder -text t
-```
-decoder è l'utilità che ci permette di decodificare un hash criptato. sostituisci t con il tuo hash da decifrare (quello della porta che hai scelto)
+prima abbiamo visto che di base abbiamo _command -var val_ per eseguire command con var=val quindi per dire al comando hack di attaccare la porta 80 faremo:
 
-adesso possiamo bypassare una porta usando l'hash decifrato
-```python
-hash -res h -port p
+```sh
+hack -port 80
 ```
-sostituisci h e p rispettivamente con hash decodificato e porta scelta.
-
-adesso abbiamo sbloccato una porta, sfruttiamo questa porta sbloccata per entrate nella MShell scrivendo:
-```python
-hack numeroporta
-```
-dove numero porta è la porta della quale abbiamo decifrato gli hash.
-
-## distruzione e vittoria
-per vincere bisogna distruggere ogni robot sulla mappa, per farlo bisogna scrivere
-```python
-shutdown
-```
-oppure
-```python
-destroy
-```
-nella sua MShell. elimina tutti i bot per vincere!
