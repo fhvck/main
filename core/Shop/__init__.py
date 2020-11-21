@@ -21,21 +21,22 @@ class Shop():
     
     def shop(self, tool:str, prize:int):
         '''add the json-like object in core/cmds.json or core/Character/cmds.json'''
-        raws=json.loads(open('core/Shop/storage/raws.json').read())
+        #raws=json.loads(open('core/Shop/storage/raws.json').read())
         # modifica locale
-        self.engine.commands.append(tool)
-        self.engine.subtract_points(prize)
-        # modifica i file
+        ## self.engine.commands.append(tool)
+        ## self.engine.subtract_points(prize)
+        # modifica i file (dumps)
         #print(tool)
-        past=json.loads(open(self.tools[raws[tool]][tool]['update_path']).read())
+        past=json.loads(open(self.tools['tools'][tool]['update_path']).read())
         past['commands'].append(tool)
-        past['cheatsheet'].update({tool:self.tools[raws[tool]][tool]})
-        f=open(self.tools[raws[tool]][tool]['update_path'],'w')
+        past['cheatsheet'].update({tool:self.tools['cheat_sheets'][tool]})
+        f=open(self.tools['tools'][tool]['update_path'],'w')
         f.write(json.dumps(past))
         f.close()
+        print('[TIP] You can use the tool after this match!')
 
     def parser(self, money, raw=None):
-        raws=json.loads(open('core/Shop/storage/raws.json').read())
+        raws=json.loads(open('core/Shop/storage.json').read())
         if not raw: raw=input(css.OKBLUE+'[SHOP]'+css.ENDC+' >> ')
         cmd=raw.split()[0].lower()
         params=raw.split()[1:]
@@ -46,37 +47,43 @@ class Shop():
             if '-h' in params:
                 self.docs(cmd)
                 return
+            
+            # BUY && SHOP
             if cmd in ['buy', 'shop']:
                 toolname=params[0]
-                if not toolname in raws.keys():
+                if not toolname in raws['tools'].keys():
                     print('[SHOP][ERR] {tn} not found.'.format(tn=toolname)); return
                 # can you buy it?
-                if int(self.tools[raws[toolname]][toolname]['prize'])>int(money):
+                if int(raws['tools'][toolname]['prize'])>int(money):
                     print('[SHOP][ERR] This tool costs too much!')
                     return
                 else:
-                    self.shop(toolname, int(self.tools[raws[toolname]][toolname]['prize']))
+                    self.shop(toolname, int(raws['tools'][toolname]['prize']))
+            
+            # EXIT
             elif cmd in ['bye', 'exit']:
                 self.engine.inshop=False
+            
+            # SHOP WINDOW
             elif cmd in ['swindow', 'show']:
                 if '-q' in params:
                     # solo gli acquistabili
-                    for tmode in self.tools: # globals, locals
-                        print(css.OKCYAN+'[INFO]'+css.ENDC+' type:',tmode)
-                        if not len(self.tools[tmode]):
-                            print(' - no tools here.')
-                        for tool in self.tools[tmode]:
-                            if int(self.tools[tmode][tool]['prize'])>int(money):
+                    for tool in self.tools['tools']: # globals, locals
+                        #print(css.OKCYAN+'[INFO]'+css.ENDC+' type:',tmode)
+                        if not len(self.tools['tools']):
+                            print(' - no tools here.'); break
+                        for tool in self.tools['tools']:
+                            if int(self.tools['tools'][tool]['prize'])>int(money):
                                 pass
                             else:
                                 print(css.OKBLUE+'-'+css.ENDC,tool)
                 else:
-                    for tmode in self.tools: # globals, locals
-                        print(css.OKCYAN+'[INFO]'+css.ENDC+' type:',tmode)
-                        if not len(self.tools[tmode]):
-                            print(' - no tools here.')
-                        for tool in self.tools[tmode]:
-                            print(css.OKBLUE+'-'+css.ENDC,tool)
+                    if not len(self.tools['tools']):
+                        print(' - no tools here.')
+                    for tool in self.tools['tools']:
+                        print(css.OKBLUE+'-'+css.ENDC,tool)
+            
+            # HELP
             elif cmd=='help':
                 if not len(params):
                     print(css.HEADER+'[H]'+css.ENDC+' List of commands:')
@@ -86,9 +93,11 @@ class Shop():
                         self.docs(params[0])
                     except:
                         print(css.FAIL+'[ERR]'+css.ENDC+' Unknown command', cmd)
+            
+            # INFO
             elif cmd in ['desc', 'info']:
                 if cmd=='desc':
-                    if not len(params): print(css.FAIL+'[ERR]'+css.ENDC+' No tool spceified.'); return
+                    if not len(params): print(css.FAIL+'[ERR]'+css.ENDC+' No tool specified.'); return
                     if '-tool' in params:
                         tool=params[params.index('-tool')+1]
                     else:
@@ -104,28 +113,32 @@ class Shop():
                         else:
                             tool=params[0]
                         self.Tdocs(tool)
+            
+            # REGIVE
             elif cmd=='regive':
                 if not '-tool' in params:
                     toolname=params[0]
                 else:
                     toolname=params[params.index('-tool')+1]
-                raws_=json.loads(open('core/Shop/storage/raws.json').read())
-                specs=json.loads(open('core/Shop/storage/tools.json').read())
-                indx=str(raws[toolname])
-                upath=specs[indx][toolname]['update_path']
+                #raws_=json.loads(open('core/Shop/storage/raws.json').read())
+                #specs=json.loads(open('core/Shop/storage/tools.json').read())
+                #indx=str(raws[toolname])
+                upath=raws['tools'][toolname]['update_path']
                 old=json.loads(open(upath).read())
                 new=old['commands'].remove(toolname)
+                del new['cheat_sheets'][toolname]
                 f=open(upath, 'w')
                 f.write(json.dumps(new))
                 f.close()
                 del f
-                self.engine.subtract_points(-abs(round(int(self.tools[raws[toolname]][toolname]['prize'])/2)))
+                self.engine.subtract_points(-abs(round(int(self.tools['tools'][toolname]['prize'])/2)))
     
     def Tdocs(self, man):
-        data=json.loads(open('core/Shop/storage/tools.json').read())
-        for tmode in data:
-            if not man in data[tmode]: continue
-            [print(key,css.WARNING+'->'+css.ENDC,data[tmode][man][key]) for key in data[tmode][man]]
+        data=json.loads(open('core/Shop/storage.json').read())
+        if not man in data['cheat_sheets'].keys(): return
+        for k in data['cheat_sheets'][man]:
+            print(k,data['cheat_sheets'][man][k])
+        return
     
     def docs(self, man):
         data=json.loads(open('core/Shop/cmds.json').read())
