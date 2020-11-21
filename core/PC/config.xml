@@ -1,0 +1,15 @@
+<SETTINGS> 
+	<game>
+        <lvl1_enemies kwarg="enems">3</lvl1_enemies>
+        <skin_img kwarg="img">U</skin_img>
+        <skin_clr kwarg="clr">okblue</skin_clr>
+        <map_columns kwarg="col">4</map_columns>
+        <map_rows kwarg="rows">5</map_rows>
+    </game>
+    <account>
+        <username>camillettss</username>
+        <points>0</points>
+        <wins>0</wins>
+        <kills>0</kills>
+    </account>
+</SETTINGS>
