@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BOT>
+    <kernel>
+        <is_locked knowed="True">True</is_locked>
+        <is_active knowed="True">True</is_active>
+    </kernel>
+    <comms>
+        <port number="80" usage="Unknown">1</port>
+        <port number="443" usage="Unknown">1</port>
+        <port number="21" usage="Unknown">1</port>
+    </comms>
+    <shells>
+        <mshell active="True">Main Shell</mshell>
+        <bshell active="Unknown">Brain Shell</bshell>
+    </shells>
+</BOT>

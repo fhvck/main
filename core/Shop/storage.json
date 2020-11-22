@@ -1,6 +1,31 @@
 {
     "tools":{
-        "crack":"100"
+        "crack":{
+            "prize":"100",
+            "update_path":"core/commands.json"
+        }
+    },
+    "skins":{
+        "imgs":[
+            "P",
+            "F",
+            "H",
+            "E",
+            "G",
+            "Q",
+            "0",
+            "*",
+            "X",
+            "Z",
+            "!"
+        ],
+        "clrs":{
+            "blue":"okblue",
+            "lime":"okgreen",
+            "yellow":"warning",
+            "red":"fail",
+            "cyan":"okcyan"
+        }
     },
     "cheat_sheets":{
         "crack":{

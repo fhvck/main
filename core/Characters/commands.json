@@ -2,7 +2,6 @@
     "bscommands":[
         "move",
         "atk", "attack",
-        "retrieve",
         "exit", "bye",
         "dmg", "fire",
         "remotehack", "rmh",
@@ -22,52 +21,44 @@
                 "-bot", "-port", "-pos"
             ],
             "output": "ritorna gli hash decodificati di -bot, port e' opzionale",
-            "notes": "specifica sempre -bot e -port con la stdsyntax (-bot bot -pos pos -port port)"
-        },
-        "retrieve": {
-            "params": [],
-            "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
-        },
-        "select": {
-            "params": [],
-            "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "notes": "specifica sempre -bot e -port con la syx (-bot bot -pos pos -port port)"
         },
         "dmg": {
             "params": [],
             "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo (o con rmh)"
         },
         "fire": {
-            "params": [],
+            "params": ["-id", "-pos"],
             "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo (o con rmh"
         },
         "remotehack": {
-            "params": [],
-            "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "params": ["-id", "-pos"],
+            "output": "sfrutta la porta 21 per hackerare un robot bloccato, non usa gli hash.",
+            "notes": "seleziona il bot usando il suo id o la pos."
         },
         "rmh": {
-            "params": [],
-            "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "params": ["-id", "-pos"],
+            "output": "sfrutta la porta 21 per hackerare un robot bloccato, non usa gli hash.",
+            "notes": "seleziona il bot usando il suo id o la pos."
         },
         "help": {
             "params": [],
-            "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "output": "mostra una lista dei comandi",
+            "notes": ""
         },
         "attack": {
-            "params": [],
-            "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "params": [
+                "-bot", "-port", "-pos"
+            ],
+            "output": "ritorna gli hash decodificati di -bot, port e' opzionale",
+            "notes": "specifica sempre -bot e -port con la syx (-bot bot -pos pos -port port)"
         },
         "map": {
-            "params": [],
-            "output": "elimina il bot",
-            "notes": "devi avere l'accesso al bot, ottienilo hackerandolo"
+            "params": ["-mode"],
+            "output": "mostra la mappa avanzata",
+            "notes": "specifica la modalità std con -m std per vedere la mappa in stile originale."
         }
     },
     "commands": [
