@@ -1,5 +1,6 @@
 import sys, os
 from functools import wraps
+import time, sys
 
 def cls_():
     if sys.platform.lower()=="linux":
@@ -71,3 +72,18 @@ def ParserSetup(func):
         params=args[1:]
         return func(self=self, x=cmd, p=params)
     return wrapper
+
+def chargebar(inner_text):
+    toolbar_width=len(inner_text)
+    # setup toolbar
+    sys.stdout.write("[%s]" % (" " * toolbar_width))
+    sys.stdout.flush()
+    sys.stdout.write("\b" * (toolbar_width+1)) # return to start of line, after '['
+
+    for i in range(toolbar_width):
+        time.sleep(0.1) # do real work here
+        # update the bar
+        sys.stdout.write(inner_text[i])
+        sys.stdout.flush()
+
+    sys.stdout.write("] \033[92mDONE!\033[0m\n") # this ends the progress bar
