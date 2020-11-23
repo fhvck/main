@@ -16,17 +16,19 @@ from core.Shop import Shop
 from core.utils import *
 from core.utils.Colors import bcolors as css
 import core.Recognition as reco
+import core.Smtp as smtp
 
 random.seed(time.time())
 
 # load screens
-# FIXME print non interpreta le sequenze di escape nei banner 
-# but sticazzi perchè i banner li ho tolti xddd
+# no non me va piu bruh
 
 points={
     "win":10,
     "kill":1
 }
+
+Box=smtp.MailBox()
 
 class Engine():
     def __init__(self, col=4, rows=5, enems=1, img='U', clr=css.OKBLUE):
@@ -58,7 +60,7 @@ class Engine():
     def run(self):
         while True:
             if not len(self.robots) or (len(self.robots)==1 and self.robots[0]==self.player):
-                self.win()
+                self.win(); break
             self.update_map()
             # BSHELL LOOP
             while self.inbshell:
@@ -196,8 +198,7 @@ class Engine():
             ]
         tree=ET.parse('core/PC/config.xml')
         root=tree.getroot()
-        for ch in root.iter('points'):
-            ch.text=int(ch.text)+self.gamepoints
+        root[1][1]=int(root[1][1])+self.gamepoints
         tree.write('core/PC/config.xml')
         print(css.OKGREEN+random.choice(titles)+css.ENDC)
         while True:
@@ -231,7 +232,7 @@ class Engine():
                         elif self.showids:
                             self.map[y][x]=bot.color+str(bot.id)+css.ENDC; done=True
                         elif self.showpos:
-                            self.map[y][x]=','.join([str(p) for p in bot.pos]); done=True # TODO color here 
+                            self.map[y][x]=bot.color+','.join([str(p) for p in bot.pos])+css.ENDC; done=True
                         else:
                             self.map[y][x]=bot.img; done=True
                 if not done:
@@ -448,11 +449,12 @@ def intro():
                     goto3()
                 hashes={'80':'aGFzaDE=','443':'Mmhhc2g='}
                 print(css.HEADER+'hashes:'+css.ENDC)
-                [print(css.OKCYAN+'[HASH]'+css.ENDC,key,hashes[key]) for key in hashes.keys()] # FIXME scrive due volte "hashes:\nport hash\nport hash" # si è fixato da solo wtf
+                [print(css.OKCYAN+'[HASH]'+css.ENDC,key,hashes[key]) for key in hashes.keys()] # FIXME scrive tre volte "hashes:\nport hash\nport hash" # si è fixato da solo wtf
             goto3()
             print('\nQui trovi gli hash scritti "porta hash", copiane uno ("=" incluso) e passiamo al prossimo step.'); getch()
             cls_()
             def goto4():
+                choosedport='80'
                 print('adesso che abbiamo un hash dobbiamo decodificarlo. per farlo usiamo decoder. la sua sintassi è:\n'+css.OKGREEN+'> '+css.ENDC+'decoder -text testo')
                 print("questo decodificherà 'testo' quindi andiamo a sostituire testo con il nostro hash. ora"+' "decoder -text incolla_qui"')
                 print("P.S. se ti fossi dimenticato di copiare il valore o lo avessi perso puoi usare questo:\naGFzaDE=\nche è l'hash della porta 80.")
@@ -465,7 +467,7 @@ def intro():
                     print(css.HEADER+'[*]'+css.ENDC+' Decoded text: '+css.OKBLUE, base64.b64decode(x.split()[2]).decode(),css.ENDC)
                     return choosedport
                 else:
-                    print('Invalid syntax.'); goto4()
+                    print('Invalid syntax.'); return goto4()
             choosedport=goto4()
             print('\nDecoder ha restituito la versione decifrata del tuo testo. adesso usa questa versione decifrata per bypassare una porta.')
             print('usiamo lo stesso comando di prima, hash. la sua sintassi è\n'+css.OKGREEN+'> '+css.ENDC+'hash -port p -res decodedhash\nnoi prima abbiamo scritto hash e basta,')
@@ -537,7 +539,6 @@ def intro():
     }
 
 
-
 # check if is the first launch
 if not 'config.xml' in os.listdir('core/PC/'):
     root=ET.Element('SETTINGS')
@@ -554,12 +555,13 @@ if not 'config.xml' in os.listdir('core/PC/'):
     skclr.attrib['kwarg']='clr'; skclr.text='okblue'
     # columns
     cols=ET.SubElement(game, 'map_columns')
-    cols.attrib['kwarg']='col'; enems.text='4'
+    cols.attrib['kwarg']='col'; cols.text='4'
     # rows
     rws=ET.SubElement(game, 'map_rows')
-    rws.attrib['kwarg']='rows'; enems.text='5'
+    rws.attrib['kwarg']='rows'; rws.text='5'
     # GET INFO FROM THE INTRO
-    data=intro()
+    data=intro() # FIXME wtf dopo un introduzione non scrive il file xml e ricomincia. 
+    # boh eseguita nella shell di debug funziona, non so proprio cosa dire..
     account=ET.SubElement(root, 'account')
     for k, v in data.items():
         nsv=ET.SubElement(account, k)
@@ -568,6 +570,7 @@ if not 'config.xml' in os.listdir('core/PC/'):
     tree = ET.ElementTree(root)
     tree.write('core/PC/config.xml')
 
-main()
-#Team=reco.RecoSquad()
-#Team.squad['You'].render()
+#main()
+Box.render('*')
+Box.new_mail('sto cazzo', 'greatings', 'how r you bro?')
+Box.render('*')

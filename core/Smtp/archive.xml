@@ -1,0 +1,8 @@
+<mailbox>
+    <recvd>
+        <email seen="True">path</email>
+    </recvd>
+    <sent>
+        <email seen="False">path1</email>
+    </sent>
+</mailbox>
