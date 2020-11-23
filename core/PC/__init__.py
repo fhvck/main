@@ -219,11 +219,11 @@ class computer():
                     self.root[0][-1].text=input('new rows value (max 25): ')
                 elif cc in ['1', 'columns']:
                     print('actual:',cols)
-                    self.root[0][0].text=input('new columns number (max 25): ')
+                    self.root[0][-2].text=input('new columns number (max 25): ')
                 elif cc in ['3', 'enemies']:
                     maxens=(cols*rows)-2 # calcolalo con: (cols*rows)-2 # -2 perchè devi calcolare te e uno spazio libero
                     print('actual:',enems)
-                    self.root[0][-2].text=input('new enemies number: (max {})'.format(maxens))
+                    self.root[0][0].text=input('new enemies number: (max {})'.format(maxens))
                 else:
                     print('Unrecognized value, press any key...'); getch()
                     return

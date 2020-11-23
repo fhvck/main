@@ -78,7 +78,7 @@ def newCode():
     
     return code
 
-#fix last sequences
+#adjust last sequences
 def fixThirdSequence(codeNumbers, places):
     global sequences
     index1=sequences[2].index(codeNumbers[1])
@@ -206,7 +206,6 @@ class Robot():
     def parser(self, x):
         cmd=x.split()[0].lower()
         params=x.split()[1:]
-        # TODO add parser
         if '-h' in params:
             self.docs(cmd)
             return
@@ -516,25 +515,27 @@ class Robot():
                 # rapid map
                 for bot in self.Engine.robots:
                     if bot.id==self.id: continue
-                    print('- bot'+css.OKBLUE,bot.id,css.ENDC+'at'+css.OKBLUE,bot.pos,css.ENDC+'state:'+bot.state)
+                    try:
+                        print('- bot'+css.OKBLUE,bot.id,css.ENDC+'at'+css.OKBLUE,bot.pos,css.ENDC+'state:'+bot.state)
+                    except: continue # is player
             elif md in ['org', 'orig', 'original', 'general', 'main']:
                 # main map
                 if '-set' in params:
                     var=params[params.index('-set')+1]; val=params[params.index('-set')+2]
                     print(var,val)
                     if var in ['showids','showpos']:
-                        exec('self.Engine.'+var+'='+repr(bool(val)))
-                self.Engine.mktable()
+                        exec('self.Engine.'+var+'='+str(bool(val)))
+                self.Engine.show_map(self.Engine.update_map())
             else:
                 print(css.FAIL+'[ERR]'+css.ENDC+' Unknown mode:', md)
                 return
 
     def BSHdocs(self, man):
-        data=json.loads(open('core/Characters/cmds.json').read())
+        data=json.loads(open('core/Characters/commands.json').read())
         for key in data['BSSheet'][man]:
             print(key,'->',data['BSSheet'][man][key])    
 
     def docs(self, man):
-        data=json.loads(open('core/Characters/cmds.json').read())
+        data=json.loads(open('core/Characters/commands.json').read())
         for key in data['cheatsheet'][man]:
             print(key,'->',data['cheatsheet'][man][key])

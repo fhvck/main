@@ -139,10 +139,7 @@
             "params": [
                 "-port"
             ],
-            "output": "bypass a port without an hash",
-            "notes": "-port port to bypass",
-            "prize": "10",
-            "update_path": "core/Characters/cmds.json"
+            "output": "gain bshell access"
         }
     }
 }

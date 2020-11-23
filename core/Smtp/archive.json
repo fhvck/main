@@ -1,0 +1,10 @@
+{
+    "path": {
+        "Title": "Welcome",
+        "Body": "benvenuto nel team {username}"
+    },
+    "path1": {
+        "Title": "Thanks",
+        "Body": "grazie bro"
+    }
+}
