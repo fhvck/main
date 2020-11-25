@@ -1,0 +1,1 @@
+from core.Utils.map import map_parser

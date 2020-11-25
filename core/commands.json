@@ -8,16 +8,17 @@
         "reset",
         "shop",
         "reco",
-        "recognitors"
+        "recognitors",
+        "smtp", "email"
     ],
     "cheatsheet": {
         "select": {
             "params": [
-                "-m",
-                "--method"
+                "-id",
+                "-pos"
             ],
             "output": "seleziona un oggetto usando un metodo specifico",
-            "notes": "puoi selezionare per id o pos, id->botID, pos->x,y"
+            "notes": "puoi fra id, pos o null, scrittura: select -id ID oppure select -pos X,Y"
         },
         "show": {
             "params": [
@@ -73,6 +74,14 @@
             "params": [],
             "output": "entra nella base della reco squad",
             "notes": "scrivendo ad esempio 'reco call alex' reco resituir\u00c3\u00a0 l'output di call alex uscendo immediatamente dalla reco base"
+        },
+        "smtp":{
+            "params":[],
+            "output":"open the mailbox"
+        },
+        "email":{
+            "params":[],
+            "output":"open the mailbox"
         }
     }
 }
