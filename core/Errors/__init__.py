@@ -47,3 +47,7 @@ class ActionRangeError(Exception):
             return "[ERR] Object w/ id: "+repr(self.b.id)+" is too far."
         else: 
             return "[ERR] "+repr(self.pos)+" is too far."
+
+class DeprecationError(DeprecationWarning, Exception):
+    def __str__(self):
+        return 'porco d10 fermete'
