@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<azulejos>
+  <azulejo>pasto</azulejo>
+  <azulejo>flores</azulejo>
+  <azulejo>arena</azulejo>
+  <azulejo>montana</azulejo>
+  <azulejo>camino</azulejo>
+  <azulejo>agua</azulejo>
+  <azulejo>aguaProfunda</azulejo>
+  <azulejo>baseTierra</azulejo>
+  <azulejo>hielo</azulejo>
+  <azulejo>tierra</azulejo>
+  <azulejo>vacio</azulejo>
+</azulejos>
